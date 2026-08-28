@@ -1,0 +1,68 @@
+# Multi-Agent Deal Review Pipeline
+
+Week 3 Project — Mastering Agentic AI Certification. Project 3B, Track 2 (LangChain + LangGraph).
+
+See [FRAMEWORK.md](FRAMEWORK.md) for the one-liner and full agent framework this build follows.
+
+## What it does
+
+Upload a deal document (loan agreement, term sheet, vendor contract) and the pipeline:
+
+1. **Extractor agent** pulls structured terms (parties, amount, rate, term, key clauses).
+2. **Compliance agent** checks those terms against `data/compliance/rules.yaml`.
+3. **Risk agent** scores severity and drafts a plain-English risk narrative.
+4. **Orchestrator** merges all three into one report — deterministically, no LLM call, so it can never introduce a finding the upstream agents didn't produce.
+5. **Human review** — the graph pauses here. A reviewer approves, rejects, or requests edits before anything is finalized.
+
+## Architecture
+
+```
+load_document → extractor_agent → compliance_agent → risk_agent
+    → orchestrator_compile → [INTERRUPT: human review] → finalize
+```
+
+Built as a LangGraph `StateGraph` over a single `DealReviewState` (see `app/state.py`),
+checkpointed to SQLite (`data/checkpoints.sqlite`) so a review paused mid-way is resumable,
+not lost.
+
+## Observability
+
+- **Trace logs** (`data/traces/<deal_id>.jsonl`) — every node's start/end/duration/errors.
+- **Audit log** (`data/audit/<deal_id>.jsonl`) — decision-relevant events only: document
+  loaded, review finalized, who approved/rejected and when.
+- **Metrics** (`data/metrics/summary.json`) — rolling avg duration and error count per node,
+  shown live in the Streamlit sidebar.
+- **LangSmith** — set `LANGCHAIN_TRACING_V2=true` and `LANGCHAIN_API_KEY` in `.env` to also
+  get full LangSmith traces. Optional; everything above works without it.
+
+## Failure handling
+
+| Failure | Behavior |
+|---|---|
+| Document fails to parse | Hard stop before any LLM call; reported in the draft report. |
+| LLM structured output fails | One retry with a repair prompt; on 2nd failure, node's output is left empty and `needs_manual_review=True` is set, but the pipeline still produces a report explaining what's missing rather than crashing. |
+| Compliance rule can't be evaluated from available terms | Marked `unclear`, never silently passed. |
+| Human review not yet submitted | Graph stays interrupted; nothing is finalized until an explicit decision is recorded. |
+
+## Setup
+
+```bash
+cp .env.example .env   # add your OPENAI_API_KEY
+./run.sh
+```
+
+## Test data
+
+`data/sample_deals/` has 3 synthetic documents with planted compliance issues and an
+`ANSWER_KEY.md` describing exactly what should be flagged — used to validate the
+compliance/risk agents' accuracy end to end.
+
+## Tests
+
+```bash
+source .venv/bin/activate
+pytest
+```
+
+Covers the document loader and the orchestrator's merge/error-handling logic without
+requiring an API key. The agent nodes themselves are exercised via the sample deals + UI.

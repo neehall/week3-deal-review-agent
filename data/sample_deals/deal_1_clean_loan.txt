@@ -1,0 +1,29 @@
+LOAN AGREEMENT
+
+This Loan Agreement ("Agreement") is entered into as of January 15, 2026 (the "Effective Date"),
+by and between Northbridge Capital LLC ("Lender") and Alden Manufacturing Co. ("Borrower").
+
+1. PRINCIPAL AMOUNT
+Lender agrees to loan Borrower the principal sum of $250,000.00 (the "Loan").
+
+2. INTEREST RATE
+The Loan shall bear interest at a fixed annual rate of 9.5% (the "Interest Rate").
+
+3. TERM
+The term of this Agreement shall be twenty-four (24) months from the Effective Date.
+
+4. TERMINATION
+Either party may terminate this Agreement upon sixty (60) days' written notice, subject to
+repayment of all outstanding principal and accrued interest through the termination date.
+
+5. ARBITRATION
+Any dispute arising under this Agreement shall be resolved through binding arbitration
+administered by the American Arbitration Association, as set forth in the Arbitration Clause
+attached as Exhibit A.
+
+6. GOVERNING LAW
+This Agreement shall be governed by the laws of the State of Delaware.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the Effective Date.
+
+Northbridge Capital LLC                    Alden Manufacturing Co.

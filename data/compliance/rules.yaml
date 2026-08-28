@@ -1,0 +1,36 @@
+# Compliance rules used by the Compliance Agent to check extracted deal terms.
+# Scoped for a lending / commercial-deal review context. Synthetic, for demo purposes.
+
+rules:
+  - id: R1
+    description: >
+      The interest rate / APR stated must not exceed 18%.
+    check: "interest_rate_or_price present and, if a percentage, <= 18%"
+
+  - id: R2
+    description: >
+      The agreement must disclose an effective date.
+    check: "effective_date must be present"
+
+  - id: R3
+    description: >
+      Any agreement with a term length greater than 12 months must include an
+      early-termination or cancellation clause.
+    check: "if term_length > 12 months, 'termination' or 'cancellation' clause must appear in key_clauses"
+
+  - id: R4
+    description: >
+      The agreement must name at least two distinct parties.
+    check: "len(parties) >= 2"
+
+  - id: R5
+    description: >
+      Any agreement involving arbitration must explicitly disclose the arbitration
+      clause (cannot be silently implied).
+    check: "if arbitration is referenced anywhere in raw_text, it must also appear in key_clauses"
+
+  - id: R6
+    description: >
+      The deal amount must be explicitly stated (no agreement should proceed on an
+      unspecified principal/price).
+    check: "amount must be present"
