@@ -13,4 +13,7 @@ if [ ! -f ".env" ]; then
   exit 1
 fi
 
-streamlit run app/streamlit_app.py
+# PYTHONPATH must include the repo root -- Streamlit only adds the target
+# script's own directory (app/) to sys.path, so `from app.graph import ...`
+# fails as a bare module-not-found without this.
+PYTHONPATH="$PWD" streamlit run app/streamlit_app.py
