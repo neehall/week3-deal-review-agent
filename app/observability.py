@@ -101,3 +101,65 @@ def load_metrics_summary() -> dict[str, Any]:
         return json.loads(METRICS_PATH.read_text())
     except json.JSONDecodeError:
         return {}
+
+
+def _read_jsonl(path: Path) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    records: list[dict[str, Any]] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            records.append(json.loads(line))
+        except json.JSONDecodeError:
+            continue
+    return records
+
+
+def read_trace(deal_id: str) -> list[dict[str, Any]]:
+    """All debug-grade events recorded for this run, in order."""
+    return _read_jsonl(TRACE_DIR / f"{deal_id}.jsonl")
+
+
+def read_audit(deal_id: str) -> list[dict[str, Any]]:
+    """All decision-relevant events recorded for this run, in order."""
+    return _read_jsonl(AUDIT_DIR / f"{deal_id}.jsonl")
+
+
+def stage_summary(deal_id: str) -> list[dict[str, Any]]:
+    """One row per node run, in the order the nodes actually executed.
+
+    Merges node_start/node_end/node_error/llm_call_failed events from the
+    trace into a single per-stage record: status, duration, retries, error.
+    This is what the UI shows as "observability at every stage."
+    """
+    events = read_trace(deal_id)
+    stages: list[dict[str, Any]] = []
+    open_by_node: dict[str, dict[str, Any]] = {}
+
+    for ev in events:
+        node = ev.get("node")
+        if ev["event"] == "node_start":
+            stage = {"node": node, "status": "running", "duration_ms": None, "retries": 0, "error": None}
+            stages.append(stage)
+            open_by_node[node] = stage
+        elif ev["event"] == "node_end" and node in open_by_node:
+            stage = open_by_node.pop(node)
+            stage["status"] = "ok"
+            stage["duration_ms"] = ev.get("duration_ms")
+            stage["retries"] = ev.get("retries", 0)
+            for key in ("fail_count", "unclear_count", "high_severity_count"):
+                if key in ev:
+                    stage[key] = ev[key]
+        elif ev["event"] == "node_error" and node in open_by_node:
+            stage = open_by_node.pop(node)
+            stage["status"] = "error"
+            stage["duration_ms"] = ev.get("duration_ms")
+            stage["retries"] = ev.get("retries", 0)
+            stage["error"] = ev.get("error")
+        elif ev["event"] == "llm_call_failed" and node in open_by_node:
+            open_by_node[node]["retries"] += 1
+
+    return stages

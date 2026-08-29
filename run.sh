@@ -9,7 +9,7 @@ source .venv/bin/activate
 pip install -q -r requirements.txt
 
 if [ ! -f ".env" ]; then
-  echo "No .env found -- copy .env.example to .env and add your OPENAI_API_KEY first."
+  echo "No .env found -- copy .env.example to .env and add your ANTHROPIC_API_KEY first."
   exit 1
 fi
 

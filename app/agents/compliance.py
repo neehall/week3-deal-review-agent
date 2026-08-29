@@ -43,7 +43,7 @@ def _load_rules() -> list[dict]:
 
 
 def compliance_agent(state: DealReviewState) -> DealReviewState:
-    deal_id = state.file_path
+    deal_id = state.deal_id
     with node_span(deal_id, "compliance_agent") as span:
         rules = _load_rules()
 

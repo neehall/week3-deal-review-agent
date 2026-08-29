@@ -22,7 +22,7 @@ DOCUMENT:
 
 
 def extractor_agent(state: DealReviewState) -> DealReviewState:
-    deal_id = state.file_path
+    deal_id = state.deal_id
     with node_span(deal_id, "extractor_agent") as span:
         llm = get_llm()
         prompt = PROMPT_TEMPLATE.format(document=state.raw_text)

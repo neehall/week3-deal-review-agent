@@ -2,7 +2,9 @@
 
 Week 3 Project — Mastering Agentic AI Certification. Project 3B, Track 2 (LangChain + LangGraph).
 
-See [FRAMEWORK.md](FRAMEWORK.md) for the one-liner and full agent framework this build follows.
+See [FRAMEWORK.md](FRAMEWORK.md) for the one-liner and full agent framework this build follows,
+and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for diagrams (graph, human-in-the-loop
+sequence, state schema) and the failure-handling / observability design in detail.
 
 ## What it does
 
@@ -34,6 +36,10 @@ not lost.
   shown live in the Streamlit sidebar.
 - **LangSmith** — set `LANGCHAIN_TRACING_V2=true` and `LANGCHAIN_API_KEY` in `.env` to also
   get full LangSmith traces. Optional; everything above works without it.
+- **In-app observability panel** — after every run (and again after the human-review resume),
+  the Streamlit UI shows a per-stage breakdown (status, duration, retries, error) plus the full
+  audit trail for that `deal_id`, so every stage of a given run is inspectable, not just the
+  final report.
 
 ## Failure handling
 
@@ -47,7 +53,7 @@ not lost.
 ## Setup
 
 ```bash
-cp .env.example .env   # add your OPENAI_API_KEY
+cp .env.example .env   # add your ANTHROPIC_API_KEY
 ./run.sh
 ```
 

@@ -15,8 +15,54 @@ from pathlib import Path
 import streamlit as st
 
 from app.graph import get_graph
-from app.observability import load_metrics_summary
+from app.observability import load_metrics_summary, read_audit, stage_summary
 from app.state import DealReviewState
+
+STAGE_LABELS = {
+    "load_document": "1. Load Document",
+    "extractor_agent": "2. Extractor Agent",
+    "compliance_agent": "3. Compliance Agent",
+    "risk_agent": "4. Risk Agent",
+    "orchestrator_compile": "5. Orchestrator Compile",
+    "finalize": "6. Finalize (post human review)",
+}
+STATUS_ICON = {"ok": "✅", "error": "❌", "running": "⏳"}
+
+
+def render_observability(deal_id: str) -> None:
+    """Per-stage trace + audit trail for this run -- observability at every step."""
+    st.subheader("🔍 Observability — every stage of this run")
+
+    stages = stage_summary(deal_id)
+    if not stages:
+        st.caption("No trace events recorded yet.")
+    for stage in stages:
+        label = STAGE_LABELS.get(stage["node"], stage["node"])
+        icon = STATUS_ICON.get(stage["status"], "•")
+        duration = f"{stage['duration_ms']} ms" if stage["duration_ms"] is not None else "—"
+        extras = ", ".join(
+            f"{k}={v}" for k, v in stage.items()
+            if k in ("fail_count", "unclear_count", "high_severity_count") and v is not None
+        )
+        header = f"{icon} **{label}** — {duration}"
+        if stage["retries"]:
+            header += f" · {stage['retries']} retry(ies)"
+        if extras:
+            header += f" · {extras}"
+        with st.expander(header, expanded=(stage["status"] == "error")):
+            if stage["error"]:
+                st.error(stage["error"])
+            else:
+                st.caption("Completed without error.")
+
+    audit_events = read_audit(deal_id)
+    with st.expander(f"📋 Audit trail ({len(audit_events)} events)"):
+        if audit_events:
+            for ev in audit_events:
+                st.text(f"[{ev.get('ts', '?')}] {ev.get('event', '?')} — "
+                        + ", ".join(f"{k}={v}" for k, v in ev.items() if k not in ("ts", "event", "deal_id")))
+        else:
+            st.caption("No audit events recorded yet.")
 
 st.set_page_config(page_title="Deal Review Agent", layout="wide")
 st.title("📄 Multi-Agent Deal Review Pipeline")
@@ -62,7 +108,9 @@ if run_clicked and uploaded is not None:
     config = {"configurable": {"thread_id": deal_id}}
 
     graph = get_graph()
-    initial_state = DealReviewState(file_path=tmp.name)
+    # deal_id must match the checkpointer thread_id above, so trace/audit files
+    # line up with the run they belong to.
+    initial_state = DealReviewState(file_path=tmp.name, deal_id=deal_id)
 
     with st.spinner("Running extraction, compliance, and risk analysis..."):
         start = time.monotonic()
@@ -77,6 +125,8 @@ if st.session_state.awaiting_review and st.session_state.state:
     state = st.session_state.state
     st.markdown("---")
     st.markdown(state["draft_report"] if isinstance(state, dict) else state.draft_report)
+    st.markdown("---")
+    render_observability(st.session_state.deal_id)
     st.markdown("---")
 
     st.subheader("Human Review — required before this report is final")
@@ -112,3 +162,6 @@ elif st.session_state.state and not st.session_state.awaiting_review:
         st.error("Report rejected. Nothing was finalized.")
     else:
         st.warning("Marked as needs edit. Nothing was finalized -- re-run with corrections.")
+
+    st.markdown("---")
+    render_observability(st.session_state.deal_id)

@@ -28,7 +28,7 @@ DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 
 def load_document_node(state: DealReviewState) -> DealReviewState:
-    deal_id = state.file_path
+    deal_id = state.deal_id
     with node_span(deal_id, "load_document"):
         try:
             state.raw_text = load_document(state.file_path)
@@ -45,13 +45,13 @@ def load_document_node(state: DealReviewState) -> DealReviewState:
 def route_after_load(state: DealReviewState) -> str:
     """Cheapest possible failure point: don't spend LLM calls on a doc that failed to load."""
     if state.errors:
-        trace(state.file_path, "routing", decision="abort_after_load_failure")
+        trace(state.deal_id, "routing", decision="abort_after_load_failure")
         return "orchestrator_compile"  # still produce a report explaining the failure
     return "extractor_agent"
 
 
 def finalize_node(state: DealReviewState) -> DealReviewState:
-    deal_id = state.file_path
+    deal_id = state.deal_id
     with node_span(deal_id, "finalize"):
         if state.human_decision == "approved":
             state.final_report = state.draft_report

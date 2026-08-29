@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import uuid
 from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
@@ -36,6 +37,12 @@ class RiskFinding(BaseModel):
 
 class DealReviewState(BaseModel):
     """The single object passed between every LangGraph node."""
+
+    # identity -- used as the filesystem-safe key for traces/audit/checkpoints.
+    # Deliberately NOT derived from file_path: that can contain slashes
+    # (e.g. "data/sample_deals/x.txt" or a tempfile path), which breaks
+    # anything using it as a bare filename.
+    deal_id: str = Field(default_factory=lambda: uuid.uuid4().hex[:12])
 
     # input
     file_path: str

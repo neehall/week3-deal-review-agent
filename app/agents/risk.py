@@ -29,7 +29,7 @@ class RiskFindingsList(BaseModel):
 
 
 def risk_agent(state: DealReviewState) -> DealReviewState:
-    deal_id = state.file_path
+    deal_id = state.deal_id
     with node_span(deal_id, "risk_agent") as span:
         if state.extracted_terms is None:
             state.errors.append("risk_agent: skipped, no extracted terms available.")

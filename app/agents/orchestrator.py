@@ -13,7 +13,7 @@ from app.state import DealReviewState
 
 
 def orchestrator_compile(state: DealReviewState) -> DealReviewState:
-    deal_id = state.file_path
+    deal_id = state.deal_id
     with node_span(deal_id, "orchestrator_compile"):
         terms = state.extracted_terms
         lines: list[str] = ["# Deal Review Report", ""]
