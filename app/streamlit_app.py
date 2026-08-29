@@ -7,10 +7,21 @@ graph resumes and finalizes.
 
 from __future__ import annotations
 
+import sys
 import tempfile
 import time
 import uuid
 from pathlib import Path
+
+# `streamlit run app/streamlit_app.py` only puts this file's own directory
+# (app/) on sys.path, not the repo root -- so `from app.graph import ...`
+# below is a ModuleNotFoundError unless we add the repo root ourselves.
+# This has to happen before the `app.*` imports, and can't rely on an
+# external PYTHONPATH env var since hosted platforms (e.g. Streamlit
+# Community Cloud) don't give you a way to set one before launch.
+REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 import streamlit as st
 
