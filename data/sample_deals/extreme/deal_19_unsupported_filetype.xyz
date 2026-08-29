@@ -1,0 +1,6 @@
+LOAN AGREEMENT
+
+This is valid-looking contract text, but saved with an unsupported file extension (.xyz)
+to test document_loader's extension check. Streamlit's file_uploader widget restricts
+selectable types to pdf/docx/txt/md, so this case can only be exercised by calling
+load_document() directly (e.g. in a test), not through the UI itself.

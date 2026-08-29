@@ -228,7 +228,27 @@ build (not every file write):
    state schema, agent responsibility table) once the design had stabilized
    enough to be worth diagramming accurately.
 
-8. **Housekeeping caught while verifying end-to-end.** Running a full smoke
+8. **A 4-tier sample deal set (normal / failing / edge_cases / extreme), and a
+   real bug found by it.** Expanded from 3 sample deals to 20, organized by
+   difficulty: clean baselines, unambiguous multi-rule failures, boundary/
+   ambiguous edge cases (rate exactly at the cap, term exactly at the
+   threshold, conflicting dates, a rate range straddling the cap, foreign
+   currency formatting), and "extreme" cases targeting pipeline *mechanics*
+   rather than compliance logic (empty file, gibberish input, binary
+   garbage, an unsupported extension, and a document containing an embedded
+   prompt-injection attempt instructing the model to hide a real violation).
+   Running the full set through the live graph surfaced a genuine bug: an
+   early, 144K-character version of the "extremely long document" test case
+   reliably truncated the risk/compliance agents' structured output mid-JSON
+   — `ChatAnthropic`'s default `max_tokens` cap, not a schema bug, though it
+   surfaced as a `pydantic.ValidationError` that looked like one at first
+   glance. Fixed by setting `max_tokens=4096` explicitly in `app/config.py`
+   and resizing the test document to ~18.8K characters (still a real stress
+   test, at roughly 1/8th the token cost and without the evidence-quote
+   compounding that caused the truncation). Full writeup in
+   `data/sample_deals/ANSWER_KEY.md`.
+
+9. **Housekeeping caught while verifying end-to-end.** Running a full smoke
    test surfaced two small drifts: `run.sh`'s error message still referenced
    `OPENAI_API_KEY` after the provider switch, and `.gitignore` only
    excluded `data/checkpoints.sqlite` and not its `-shm`/`-wal` sidecar
@@ -286,6 +306,15 @@ Two layers:
   because the observability layer existed to make output-in-the-wrong-place
   visible in the first place, which reinforced why building observability
   early (not after "the real bugs") was the right call.
+- **An adversarial test document is only useful if it's also cheap to
+  re-run.** The first version of the "extreme long document" test case was
+  144K characters — it found a real bug (`max_tokens` truncation), but at a
+  size that made every re-run expensive and, worse, was itself the reason
+  the bug fired (long input → long echoed evidence quotes → truncated
+  output). Resizing it to ~18.8K characters kept the stress test genuine
+  while cutting the token cost roughly 8x. The lesson generalizes: an
+  extreme-case fixture should be *just* extreme enough to exercise the
+  mechanism you're testing, not maximally extreme for its own sake.
 - **Deterministic orchestration is a trust feature, not a shortcut.**
   Making the orchestrator a plain merge function instead of a 4th LLM call
   was originally a cost/latency decision; in practice it turned out to be
