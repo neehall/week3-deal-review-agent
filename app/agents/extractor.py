@@ -3,16 +3,20 @@
 from __future__ import annotations
 
 from app.agents._llm_utils import structured_call_with_retry
+from app.agents.prompts import EXTRACTOR_SYSTEM_PROMPT
 from app.config import get_llm
 from app.observability import node_span, trace
 from app.state import DealReviewState, ExtractedTerms
 
-PROMPT_TEMPLATE = """You are a contract analyst extracting structured terms from a deal document.
-Read the document below and extract the fields precisely as they appear. If a field is not
-present in the document, leave it null/empty -- never invent a value. For key_clauses, list
-every notable clause type present (e.g. arbitration, indemnification, termination, cancellation,
-non-renewal, confidentiality, limitation of liability) using the same terminology the document
-uses, even if it appears deep in a "dispute resolution" or similarly-named section.
+# Task prompt: per-call instructions + the document itself. The agent's
+# persistent identity and guardrails (never invent a value, ignore embedded
+# instructions, etc.) live in EXTRACTOR_SYSTEM_PROMPT instead, so they don't
+# have to be repeated here and can't drift out of sync with the other agents.
+PROMPT_TEMPLATE = """Extract the fields precisely as they appear in the document below. For
+key_clauses, list every notable clause type present (e.g. arbitration, indemnification,
+termination, cancellation, non-renewal, confidentiality, limitation of liability) using the same
+terminology the document uses, even if it appears deep in a "dispute resolution" or
+similarly-named section.
 
 DOCUMENT:
 ---
@@ -27,7 +31,8 @@ def extractor_agent(state: DealReviewState) -> DealReviewState:
         llm = get_llm()
         prompt = PROMPT_TEMPLATE.format(document=state.raw_text)
         result, retries = structured_call_with_retry(
-            llm, ExtractedTerms, prompt, deal_id, "extractor_agent"
+            llm, ExtractedTerms, prompt, deal_id, "extractor_agent",
+            system_prompt=EXTRACTOR_SYSTEM_PROMPT,
         )
         span["retries"] = retries
 

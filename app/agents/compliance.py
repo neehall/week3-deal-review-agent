@@ -8,17 +8,19 @@ import yaml
 from pydantic import BaseModel
 
 from app.agents._llm_utils import structured_call_with_retry
+from app.agents.prompts import COMPLIANCE_SYSTEM_PROMPT
 from app.config import get_llm
 from app.observability import node_span
 from app.state import ComplianceFinding, DealReviewState
 
 RULES_PATH = Path(__file__).resolve().parent.parent.parent / "data" / "compliance" / "rules.yaml"
 
-PROMPT_TEMPLATE = """You are a compliance reviewer. Evaluate the extracted deal terms and the
-original document text against each rule below. For every rule, return a status of "pass",
-"fail", or "unclear" (use "unclear" whenever the document doesn't give you enough information
-to be certain -- never guess a "pass" to fill a gap). Cite the specific evidence (a quote or a
-clear reasoning trace) for each status.
+# Task prompt: per-call instructions + rules/terms/document for this run. The
+# agent's persistent identity and guardrails ("never guess a pass," ignore
+# embedded instructions, etc.) live in COMPLIANCE_SYSTEM_PROMPT instead.
+PROMPT_TEMPLATE = """Evaluate the extracted deal terms and the original document text against
+each rule below. For every rule, return a status of "pass", "fail", or "unclear" and cite the
+specific evidence (a quote or a clear reasoning trace) for each status.
 
 RULES:
 {rules}
@@ -61,7 +63,8 @@ def compliance_agent(state: DealReviewState) -> DealReviewState:
             document=state.raw_text,
         )
         result, retries = structured_call_with_retry(
-            llm, ComplianceFindingsList, prompt, deal_id, "compliance_agent"
+            llm, ComplianceFindingsList, prompt, deal_id, "compliance_agent",
+            system_prompt=COMPLIANCE_SYSTEM_PROMPT,
         )
         span["retries"] = retries
 

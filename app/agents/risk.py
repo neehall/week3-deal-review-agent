@@ -5,16 +5,16 @@ from __future__ import annotations
 from pydantic import BaseModel
 
 from app.agents._llm_utils import structured_call_with_retry
+from app.agents.prompts import RISK_SYSTEM_PROMPT
 from app.config import get_llm
 from app.observability import node_span
 from app.state import DealReviewState, RiskFinding
 
-PROMPT_TEMPLATE = """You are a risk analyst. Given the extracted deal terms and the compliance
-findings below, identify the concrete risks a reviewer should know about, and rate each risk's
-severity (low, medium, high). Every "fail" compliance finding should map to at least one risk
-finding; "unclear" findings should generally map to a low/medium risk noting the ambiguity
-rather than being ignored. Also flag any risk not caught by the compliance rules but visible in
-the terms themselves (e.g. an unusually short notice period, an unbalanced termination right).
+# Task prompt: per-call instructions + this run's terms/findings. The
+# agent's persistent identity and guardrails live in RISK_SYSTEM_PROMPT.
+PROMPT_TEMPLATE = """Given the extracted deal terms and the compliance findings below, identify
+the concrete risks a reviewer should know about and rate each risk's severity (low, medium,
+high).
 
 EXTRACTED TERMS:
 {extracted_terms}
@@ -47,7 +47,8 @@ def risk_agent(state: DealReviewState) -> DealReviewState:
             compliance_findings=findings_text,
         )
         result, retries = structured_call_with_retry(
-            llm, RiskFindingsList, prompt, deal_id, "risk_agent"
+            llm, RiskFindingsList, prompt, deal_id, "risk_agent",
+            system_prompt=RISK_SYSTEM_PROMPT,
         )
         span["retries"] = retries
 

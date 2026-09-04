@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from typing import TypeVar
 
+from langchain_core.messages import HumanMessage, SystemMessage
 from pydantic import BaseModel
 
 from app.observability import trace
@@ -23,15 +24,27 @@ def structured_call_with_retry(
     prompt: str,
     deal_id: str,
     node_name: str,
+    system_prompt: str | None = None,
     max_retries: int = 1,
 ) -> tuple[T | None, int]:
-    """Returns (result_or_None, retries_used)."""
+    """Returns (result_or_None, retries_used).
+
+    `system_prompt`, when given (see app/agents/prompts.py), carries the
+    agent's persistent identity/guardrails and is sent on every attempt,
+    including retries -- it's the task prompt that gets a repair note
+    appended, not the system prompt.
+    """
     structured_llm = llm.with_structured_output(schema)
     attempt_prompt = prompt
 
     for attempt in range(max_retries + 1):
         try:
-            result = structured_llm.invoke(attempt_prompt)
+            messages = (
+                [SystemMessage(content=system_prompt), HumanMessage(content=attempt_prompt)]
+                if system_prompt
+                else attempt_prompt
+            )
+            result = structured_llm.invoke(messages)
             return result, attempt
         except Exception as exc:  # noqa: BLE001 - LLM/parsing failures of any kind
             trace(deal_id, "llm_call_failed", node=node_name, attempt=attempt, error=str(exc))
