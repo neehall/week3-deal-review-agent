@@ -90,6 +90,14 @@ good answer closely paraphrases retrieved text) scores a structured compliance r
 labels, severity tags, synthesized risk narrative — more conservatively than a literal quote
 would score.
 
+## Systematic evaluation (Week 4)
+
+A full golden-dataset evaluation of this pipeline — 34 hand-verified cases, LangSmith
+tracing, baseline vs. improved comparison — lives in the sibling `Week 4 Project/`
+repo, not here (that project's own scope; this repo only carries the resulting rule
+and prompt fixes, see `CHANGELOG.md`'s "Changed" entry above). See
+`../Week 4 Project/README.md` for the full report.
+
 ## Tests
 
 ```bash

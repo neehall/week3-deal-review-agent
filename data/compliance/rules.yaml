@@ -4,8 +4,22 @@
 rules:
   - id: R1
     description: >
-      The interest rate / APR stated must not exceed 18%.
-    check: "interest_rate_or_price present and, if a percentage, <= 18%"
+      If this agreement involves an interest rate, APR, or financing charge, it must
+      not exceed 18%. Not every deal type carries a rate at all (e.g. a lease charging
+      flat rent, a flat-fee services agreement, a franchise deal with royalties
+      deferred to an unattached exhibit) -- when the document makes clear there is no
+      rate/price-percentage dimension to this deal, the rule does not apply and should
+      be marked "pass", not "unclear". Reserve "unclear" for cases where a rate might
+      exist but the document doesn't clearly disclose whether it does. If the rate is
+      stated as a range (e.g. "16-21%") rather than a single figure, evaluate the
+      range's upper bound against the 18% cap: the agreement as written permits the
+      lender/counterparty to charge up to that upper bound, so a range whose top end
+      exceeds 18% is a fail, not unclear -- there is nothing ambiguous about what the
+      document permits, even though the actual rate charged in any given instance is
+      not yet fixed.
+    check: "if a rate/price-percentage dimension exists for this deal type, it must be
+      present and <= 18% (for a stated range, compare the range's upper bound); if this
+      deal type genuinely has no such dimension, treat as not applicable (pass)"
 
   - id: R2
     description: >

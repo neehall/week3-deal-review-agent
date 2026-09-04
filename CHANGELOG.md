@@ -5,6 +5,38 @@ links the commit that made it; see `git log` for full diffs.
 
 ## [Unreleased]
 
+### Changed — compliance rule/prompt fixes from Week 4's systematic evaluation
+- `data/compliance/rules.yaml`, R1: previously silent on what to do when a
+  deal type has no rate/price dimension at all (a lease charging flat
+  rent, a flat-fee services contract) — the compliance agent
+  inconsistently marked these `unclear` instead of `pass`. R1's
+  description now explicitly distinguishes "no rate dimension exists"
+  (pass) from "a rate might exist but isn't disclosed" (unclear), and
+  adds guidance for a rate stated as a range (evaluate the upper bound
+  against the cap, since that's what the agreement as written permits).
+- `app/agents/prompts.py`, `COMPLIANCE_SYSTEM_PROMPT`: added rules 1a/1b,
+  generalizing the not-applicable-vs-unclear distinction beyond R1, and
+  explicitly separating "no rate named anywhere" (pass) from "a rate is
+  named but not disclosed, e.g. deferred to an unattached exhibit"
+  (still unclear).
+- Found and fixed via a 34-case golden-dataset evaluation in the sibling
+  Week 4 Project (not in this repo) — baseline vs. 3-fix comparison,
+  `unclear_count_correct` +19.3pp, task completion 73.5% → 94.1%. One
+  regression was also found and reported honestly rather than hidden: on
+  `data/sample_deals/extreme/deal_18_binary_garbage.txt`, the fixes'
+  "prefer unclear" language over-generalized, producing all-unclear
+  findings instead of the intended mix of confident fails and unclears
+  for a genuinely garbled document — flagged as an open follow-up, not
+  yet fixed. Full analysis: see the Week 4 Project's
+  `docs/failure_analysis.md` and `docs/phase4_improvement_report.md`.
+- `data/sample_deals/ANSWER_KEY.md` was not updated to match — its
+  per-file expected results describe this repo's pre-Week-4 behavior.
+  Two entries in it were independently found to be mis-transcribed
+  errors (not behavior drift) during the Week 4 evaluation: `deal_7`'s
+  expected fail count, and `deal_15`'s expected fail/unclear split. See
+  the Week 4 Project's `data/golden_dataset/cases.json` for the
+  corrected, re-verified values.
+
 ### Added — ragas-based independent evaluation
 - `app/ragas_eval.py`: scores the orchestrator's draft report for
   groundedness in the source document using the `ragas` framework's
