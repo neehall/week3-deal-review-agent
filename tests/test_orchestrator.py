@@ -1,3 +1,9 @@
+"""Unit tests for orchestrator_compile()'s deterministic merge and its
+handling of partial/failed upstream state.
+
+No API key required -- the orchestrator makes no LLM call.
+"""
+
 from app.agents.orchestrator import orchestrator_compile
 from app.state import ComplianceFinding, DealReviewState, ExtractedTerms, RiskFinding
 

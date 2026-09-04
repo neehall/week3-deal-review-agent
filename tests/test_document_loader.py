@@ -1,3 +1,8 @@
+"""Unit tests for document_loader.load_document()'s error paths.
+
+No API key required -- these never touch the LLM, only file parsing.
+"""
+
 import pytest
 
 from app.tools.document_loader import DocumentLoadError, load_document
