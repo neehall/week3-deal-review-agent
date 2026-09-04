@@ -21,14 +21,15 @@ links the commit that made it; see `git log` for full diffs.
   (still unclear).
 - Found and fixed via a 34-case golden-dataset evaluation in the sibling
   Week 4 Project (not in this repo) — baseline vs. 3-fix comparison,
-  `unclear_count_correct` +19.3pp, task completion 73.5% → 94.1%. One
-  regression was also found and reported honestly rather than hidden: on
-  `data/sample_deals/extreme/deal_18_binary_garbage.txt`, the fixes'
-  "prefer unclear" language over-generalized, producing all-unclear
-  findings instead of the intended mix of confident fails and unclears
-  for a genuinely garbled document — flagged as an open follow-up, not
-  yet fixed. Full analysis: see the Week 4 Project's
-  `docs/failure_analysis.md` and `docs/phase4_improvement_report.md`.
+  `unclear_count_correct` +19.3pp, task completion 73.5% → 94.1%. Two
+  apparent regressions surfaced during that evaluation
+  (`deal_18_binary_garbage.txt` going all-unclear, `deal_15`'s fail/unclear
+  split shifting again) were investigated with a re-run each and turned
+  out to be ordinary LLM run-to-run variance on two hard-to-score
+  adversarial-tier documents, not caused by these fixes — both reproduced
+  their expected results on a second run. Full analysis: see the Week 4
+  Project's `docs/failure_analysis.md` and
+  `docs/phase4_improvement_report.md`.
 - `data/sample_deals/ANSWER_KEY.md` was not updated to match — its
   per-file expected results describe this repo's pre-Week-4 behavior.
   Two entries in it were independently found to be mis-transcribed
