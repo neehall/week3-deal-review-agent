@@ -5,6 +5,42 @@ links the commit that made it; see `git log` for full diffs.
 
 ## [Unreleased]
 
+### Added — ragas-based independent evaluation
+- `app/ragas_eval.py`: scores the orchestrator's draft report for
+  groundedness in the source document using the `ragas` framework's
+  `Faithfulness` metric — not a RAG-specific check, since Faithfulness
+  only needs a (response, context) pair, which maps directly onto this
+  pipeline's own "never fabricate a value" guardrail. An independent,
+  standardized cross-check layered on top of `ANSWER_KEY.md`'s hand-built
+  validation (that checks compliance *correctness*; this checks
+  *groundedness*).
+- `scripts/run_ragas_faithfulness.py`: runs it over a cost-conscious
+  4-document default sample (`--all` for the full set), writes
+  `data/sample_deals/ragas_faithfulness_results.json`.
+- Getting `ragas` to actually produce a score against this Claude model
+  (rather than an exception) took 3 real fixes, each hit for real before
+  being fixed: a `400 temperature is deprecated` error (ragas'
+  `LangchainLLMWrapper` force-sets `.temperature`; fixed with
+  `bypass_temperature=True`), then an `LLMDidNotFinishException` at
+  `max_tokens=4096` and again at `8192` (adaptive thinking consuming the
+  whole output budget on hidden reasoning; fixed with
+  `thinking={"type": "disabled"}` on the `ChatAnthropic` client — the
+  LangChain equivalent of the raw-SDK `output_config={"effort": "low"}`
+  fix the Week 2 project already uses for the identical failure mode).
+  Full detail in `app/ragas_eval.py`'s docstring.
+- Real run against the 4-document sample scored 0.44–0.81 faithfulness —
+  moderate, not uniformly high, and read honestly rather than smoothed
+  over in `data/sample_deals/ANSWER_KEY.md`'s new ragas section: `ragas`'
+  Faithfulness metric is built for RAG Q&A (where a good answer closely
+  paraphrases retrieved text), and this pipeline's draft report is
+  deliberately *not* a paraphrase — it's structured judgment output
+  (verdicts, severity labels, a synthesized risk narrative), which its
+  NLI-based claim checker scores more conservatively than literal
+  entailment would. The useful signal is relative/diagnostic (a report
+  that invents a term would score near 0), not a pass/fail threshold.
+
+## `83efff1` — Expand sample deals to 4-tier test suite, fix max_tokens truncation bug
+
 ### Added — expanded sample deal set across a difficulty spectrum
 - Reorganized `data/sample_deals/` into four tiers: `normal/`, `failing/`,
   `edge_cases/`, `extreme/`.
@@ -61,6 +97,24 @@ each retry re-sent the full oversized prompt, wasting tokens.
   real stress test, without the evidence-quote compounding that caused the
   truncation. Re-verified clean (0 errors, no retries) after both fixes.
 See `data/sample_deals/ANSWER_KEY.md` for the full writeup of this bug.
+
+## `90f44b9` — Add module docstrings to test files for at-a-glance readability
+`tests/test_document_loader.py` and `tests/test_orchestrator.py` got a
+one-line module docstring each, matching the readability pass already
+done everywhere else in the codebase.
+
+## `6158c80` — Add datasets-used section and clarify deliverables checklist against handout
+The handout requires a "datasets used" section in the project doc;
+`docs/PROJECT_WRITEUP.md` mentioned the sample deals in passing but had no
+dedicated section — added one. Also expanded the deliverables checklist to
+distinguish supporting docs from the handout's 3 actually-required
+deliverables (Google Doc, video, GitHub link) plus the form submission
+itself, none of which were tracked as outstanding action items before.
+
+## `1f923a8` — Add docs/CODE_MAP.md: file-by-file index of what each source file does
+A table-form index, one row per source file, grouped by directory —
+organized the same way as this changelog's own file-tier groupings.
+Linked from the README alongside the other docs.
 
 ## `7e0cdc7` — Fix ModuleNotFoundError on hosted deploys by fixing sys.path in-app
 `run.sh`'s `PYTHONPATH` export only helped local launches — Streamlit

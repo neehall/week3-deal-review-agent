@@ -274,6 +274,24 @@ build (not every file write):
    excluded `data/checkpoints.sqlite` and not its `-shm`/`-wal` sidecar
    files (SQLite's WAL mode). Both fixed before the first push.
 
+10. **Added `ragas` as an independent evaluation layer, despite this not
+    being a RAG system.** `ragas`' `Faithfulness` metric only needs a
+    (response, context) pair — no retrieval step required — which maps
+    onto this pipeline's "never fabricate a value" guardrail: source
+    document as context, draft report as response. Getting it to actually
+    run against this Claude model took 3 real fixes (a rejected
+    `temperature` param, then two rounds of the same `max_tokens`
+    truncation class of bug already found in iteration 8, this time
+    inside `ragas`' own internal judge calls — ultimately fixed by
+    disabling adaptive thinking on that client, not just raising
+    `max_tokens`). Real scores came back moderate (0.44–0.81), not
+    uniformly high — documented honestly in
+    `data/sample_deals/ANSWER_KEY.md` rather than tuned toward a better-
+    looking number, since the likely explanation (a metric built for RAG
+    Q&A scoring structured judgment output more conservatively than a
+    literal quote) is itself a useful thing to know about the metric, not
+    a pipeline bug.
+
 ---
 
 ## 4. Testing & validation

@@ -11,3 +11,7 @@ python-docx>=1.1.0
 python-dotenv>=1.0.1
 pyyaml>=6.0.1
 pytest>=8.3.0
+
+# Optional: ragas Faithfulness check (app/ragas_eval.py,
+# scripts/run_ragas_faithfulness.py) -- not required to run the app itself.
+ragas>=0.4.0

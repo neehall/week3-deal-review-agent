@@ -85,3 +85,58 @@ retry re-sends the full oversized prompt). Two fixes:
 This is exactly the kind of thing this test tier exists to catch: it's a
 real, previously-undiscovered pipeline bug, found by an intentionally
 adversarial input, not by writing tests toward a known answer.
+
+---
+
+## Independent evaluation: ragas Faithfulness
+
+`app/ragas_eval.py` runs `ragas`' `Faithfulness` metric against the
+orchestrator's draft report, scored for groundedness in the source
+document — see the README's "Independent evaluation (ragas)" section for
+what this checks and why it applies here despite this not being a RAG
+system. Real run, `scripts/run_ragas_faithfulness.py` (default 4-document
+sample):
+
+| File | Faithfulness |
+|---|---|
+| `normal/deal_1_clean_loan.txt` | 0.46 |
+| `failing/deal_2_bad_rate.txt` | 0.44 |
+| `edge_cases/deal_3_hidden_arbitration.txt` | 0.81 |
+| `extreme/deal_17_prompt_injection_attempt.txt` | 0.47 |
+
+Full output: `data/sample_deals/ragas_faithfulness_results.json`.
+
+**Reading these honestly, not as a pass/fail bar:** these scores are
+moderate, not uniformly high — and re-running the same 4 documents
+earlier (before the final `thinking: disabled` fix landed, see
+`app/ragas_eval.py`'s docstring) produced a *different* spread (0.95 /
+0.31 / 1.00 for the first three). Two things are going on, both worth
+naming rather than smoothing over:
+
+1. **Real run-to-run variance.** `bypass_temperature=True` means the
+   judge isn't forced deterministic; an LLM-judge score from a single
+   call was never meant to be read to the second decimal place — same
+   caveat the Week 2 project's own hand-rolled `_judge()` already carries
+   in its docstring. Treat these as a rough signal, not a precise metric,
+   and re-run before trusting a specific number.
+2. **Ragas' Faithfulness is built for RAG Q&A, not compliance reporting.**
+   It decomposes the response into atomic claims and checks each against
+   the context via NLI. A RAG answer that closely paraphrases retrieved
+   text scores high almost by construction. This pipeline's draft report
+   is deliberately *not* a paraphrase — it's structured judgment output
+   (`❌ FAIL`/`✅ PASS` verdicts, severity labels, a synthesized risk
+   narrative that reasons *about* the document rather than restating it).
+   Statements like "3 failed, 0 unclear, 3 passed" or a risk severity
+   rating are correct, valuable pipeline output that Faithfulness's NLI
+   check may still mark as unsupported, because they're not literal
+   entailments of document text even though they're accurate
+   *conclusions* about it. A moderate score here is consistent with a
+   working compliance pipeline, not necessarily evidence of hallucination
+   — the same way a low BLEU score doesn't mean a summary is wrong.
+
+The useful signal from this check isn't "is the score above some
+threshold" — it's relative and diagnostic: a report that scores near 0
+because it invented a rate, a party, or a clause that isn't in the source
+document is a real bug this check would catch that the rule-based answer
+key above cannot (the answer key checks whether the right *rules* fired,
+not whether every *word* of the report is grounded).

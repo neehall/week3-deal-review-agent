@@ -62,9 +62,30 @@ cp .env.example .env   # add your ANTHROPIC_API_KEY
 
 ## Test data
 
-`data/sample_deals/` has 3 synthetic documents with planted compliance issues and an
-`ANSWER_KEY.md` describing exactly what should be flagged — used to validate the
-compliance/risk agents' accuracy end to end.
+`data/sample_deals/` has 20 synthetic documents across 4 tiers (normal, failing, edge_cases,
+extreme) with an `ANSWER_KEY.md` describing exactly what should be flagged — used to validate
+the compliance/risk agents' accuracy end to end.
+
+## Independent evaluation (ragas)
+
+This isn't a RAG system — no corpus, no retrieval step — but `ragas`' `Faithfulness` metric
+doesn't require one: it only asks whether every claim in a piece of text traces back to a given
+context, which maps directly onto this pipeline's own "never fabricate a value" guardrail.
+`app/ragas_eval.py` scores the orchestrator's draft report for groundedness against the source
+document, as a standardized cross-check layered on top of `ANSWER_KEY.md`'s own hand-built
+validation (that checks compliance *correctness*; this checks *groundedness*).
+
+```bash
+PYTHONPATH=. python scripts/run_ragas_faithfulness.py           # 1 doc/tier, 4 total
+PYTHONPATH=. python scripts/run_ragas_faithfulness.py --all     # every sample deal
+```
+
+Real run against the default 4-document sample: faithfulness scored 0.46–0.81, not uniformly
+high. That's an honest, informative result rather than a bug — see
+`data/sample_deals/ANSWER_KEY.md`'s ragas section for why a metric built for RAG Q&A (where a
+good answer closely paraphrases retrieved text) scores a structured compliance report — verdict
+labels, severity tags, synthesized risk narrative — more conservatively than a literal quote
+would score.
 
 ## Tests
 

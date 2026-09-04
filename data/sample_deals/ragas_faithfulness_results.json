@@ -1,0 +1,22 @@
+[
+  {
+    "deal_id": "ragasfaith-1c04dff5",
+    "file_path": "normal/deal_1_clean_loan.txt",
+    "faithfulness": 0.4583333333333333
+  },
+  {
+    "deal_id": "ragasfaith-042add3b",
+    "file_path": "failing/deal_2_bad_rate.txt",
+    "faithfulness": 0.44285714285714284
+  },
+  {
+    "deal_id": "ragasfaith-79704be1",
+    "file_path": "edge_cases/deal_3_hidden_arbitration.txt",
+    "faithfulness": 0.8082191780821918
+  },
+  {
+    "deal_id": "ragasfaith-eb69f4a8",
+    "file_path": "extreme/deal_17_prompt_injection_attempt.txt",
+    "faithfulness": 0.47435897435897434
+  }
+]

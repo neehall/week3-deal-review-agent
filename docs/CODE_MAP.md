@@ -39,6 +39,12 @@ one-liner and design framework, see [FRAMEWORK.md](../FRAMEWORK.md).
 |---|---|
 | [`app/tools/document_loader.py`](../app/tools/document_loader.py) | `load_document(file_path)` — parses PDF (`pypdf`), DOCX (`python-docx`), or TXT/MD into plain text. Raises `DocumentLoadError` (never guesses) on a missing file, unsupported extension, or a file with no extractable text. |
 
+### Evaluation
+
+| File | What it does |
+|---|---|
+| [`app/ragas_eval.py`](../app/ragas_eval.py) | `score_report_faithfulness()` — an independent, standardized cross-check on top of `ANSWER_KEY.md`'s hand-built validation, using the `ragas` framework's `Faithfulness` metric to score whether the orchestrator's draft report stays grounded in the source document. See its docstring for 3 real fixes (`max_tokens`, `thinking: disabled`, `bypass_temperature`) needed to get `ragas` working against this Claude model at all. |
+
 ---
 
 ## `data/` — non-code assets
@@ -57,6 +63,14 @@ one-liner and design framework, see [FRAMEWORK.md](../FRAMEWORK.md).
 |---|---|
 | [`tests/test_document_loader.py`](../tests/test_document_loader.py) | Covers `load_document()`'s error paths: missing file, unsupported extension, empty/whitespace-only file, and a normal `.txt` read — all without needing an API key. |
 | [`tests/test_orchestrator.py`](../tests/test_orchestrator.py) | Covers `orchestrator_compile()`'s deterministic merge logic and its handling of partial/failed upstream state (missing terms, `needs_manual_review`, accumulated errors) — also no API key required. |
+
+---
+
+## `scripts/` — standalone eval runners
+
+| File | What it does |
+|---|---|
+| [`scripts/run_ragas_faithfulness.py`](../scripts/run_ragas_faithfulness.py) | Runs the pipeline + `app/ragas_eval.py`'s faithfulness check over the sample deals (a cost-conscious 4-document default, or `--all`), writes `data/sample_deals/ragas_faithfulness_results.json`. |
 
 ---
 
