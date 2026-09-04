@@ -144,7 +144,7 @@ didn't. See [FRAMEWORK.md](../FRAMEWORK.md) → "What should it never do?"
 |---|---|---|
 | Bad/empty file, unsupported type | `load_document` | Hard stop, no LLM calls spent, routed straight to `orchestrator_compile` to explain the failure. |
 | Malformed/empty structured LLM output | `app/agents/_llm_utils.py` | One retry with a repair prompt; on 2nd failure, node returns `None` and sets `needs_manual_review=True` rather than crashing the run. |
-| Rule can't be evaluated from available terms | `compliance_agent` (LLM instructed) | Returns `status="unclear"`, never silently `"pass"`. |
+| Rule can't be evaluated from available terms | `compliance_agent` (LLM instructed) | Returns `status="unclear"`, never silently `"pass"`. Since Week 4's evaluation (see below), this is scoped more precisely: `"unclear"` is for a rule that *plausibly applies* but can't be confirmed (e.g. a rate referenced but deferred to an unattached exhibit); a rule that *doesn't apply to this deal type at all* (e.g. a rate cap on a document with no rate/price dimension whatsoever) now returns a reasoned `"pass"` instead — see `data/compliance/rules.yaml` R1 and `COMPLIANCE_SYSTEM_PROMPT` rules 1a/1b. |
 | Downstream node has no upstream terms to work with | `compliance_agent`, `risk_agent` | Skips itself, appends to `errors`, sets `needs_manual_review=True`, pipeline still completes. |
 | Human hasn't submitted a decision yet | `finalize` (via `interrupt_before`) | Graph stays paused; nothing is finalized until an explicit `approved`/`rejected`/`needs_edit` is recorded. |
 
@@ -172,3 +172,13 @@ The Streamlit UI renders a per-stage observability panel after every run
 (and again after the human-review resume): one row per pipeline stage with
 status, duration, retry count, and any error — plus the full audit trail —
 so nothing about a given run is a black box.
+
+## Systematic evaluation (Week 4)
+
+This architecture didn't change structurally for Week 4 — no new nodes, no new
+state fields — but the compliance rule/prompt text did, found via a 34-case golden
+dataset evaluation run against this exact graph. See the sibling
+`Week 4 Project/docs/EVAL_ARCHITECTURE.md` for how that evaluation itself is built
+(dataset construction, LangSmith instrumentation, the baseline → fix → re-run
+loop), and this repo's `CHANGELOG.md` for what specifically changed here as a
+result.
