@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1706" viewBox="0 0 1600 1706"><rect width="1600" height="1706" fill="#eef0ef"/><circle cx="60" cy="66" r="4.5" fill="#7a2e3a"/>
+<text x="76" y="72" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="14" letter-spacing="2" fill="#7a2e3a" text-anchor="start">CODEBASE DOSSIER · WEEK 3 PROJECT</text>
+<text x="58" y="140" font-family="Georgia, 'Times New Roman', serif" font-size="58" font-weight="700" fill="#171a1f" text-anchor="start">Deal Review Dossier</text>
+<text x="60" y="178" font-family="'Helvetica Neue', Arial, sans-serif" font-size="19" fill="#454b54" text-anchor="start">Every source file in the Multi-Agent Deal Review Pipeline, end to end — what it does, where it sits</text>
+<text x="60" y="205" font-family="'Helvetica Neue', Arial, sans-serif" font-size="19" fill="#454b54" text-anchor="start">in the graph, and which files talk to which.</text>
+<rect x="60" y="250" width="150" height="72" rx="3" fill="#f8f9f8" stroke="#c9cdc9"/>
+<text x="78" y="288" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="26" fill="#7a2e3a" text-anchor="start">3</text>
+<text x="78" y="308" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10.5" letter-spacing="1" fill="#454b54" text-anchor="start">LLM AGENTS</text>
+<rect x="224" y="250" width="242.79999999999998" height="72" rx="3" fill="#f8f9f8" stroke="#c9cdc9"/>
+<text x="242" y="288" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="26" fill="#7a2e3a" text-anchor="start">1</text>
+<text x="242" y="308" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10.5" letter-spacing="1" fill="#454b54" text-anchor="start">DETERMINISTIC ORCHESTRATOR</text>
+<rect x="480.79999999999995" y="250" width="150" height="72" rx="3" fill="#f8f9f8" stroke="#c9cdc9"/>
+<text x="498.79999999999995" y="288" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="26" fill="#7a2e3a" text-anchor="start">7</text>
+<text x="498.79999999999995" y="308" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10.5" letter-spacing="1" fill="#454b54" text-anchor="start">GRAPH NODES</text>
+<rect x="644.8" y="250" width="164.8" height="72" rx="3" fill="#f8f9f8" stroke="#c9cdc9"/>
+<text x="662.8" y="288" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="26" fill="#7a2e3a" text-anchor="start">6</text>
+<text x="662.8" y="308" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10.5" letter-spacing="1" fill="#454b54" text-anchor="start">COMPLIANCE RULES</text>
+<rect x="823.5999999999999" y="250" width="150" height="72" rx="3" fill="#f8f9f8" stroke="#c9cdc9"/>
+<text x="841.5999999999999" y="288" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="26" fill="#7a2e3a" text-anchor="start">20</text>
+<text x="841.5999999999999" y="308" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10.5" letter-spacing="1" fill="#454b54" text-anchor="start">TEST DOCUMENTS</text>
+<line x1="60" y1="366" x2="1540" y2="366" stroke="#c9cdc9"/>
+<text x="60" y="410" font-family="Georgia, 'Times New Roman', serif" font-size="26" font-weight="700" fill="#171a1f" text-anchor="start">The Pipeline, in Order</text>
+<text x="60" y="436" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#454b54" text-anchor="start">What runs, node by node, when a document is uploaded — from app/graph.py. The graph always pauses at the dashed node for a human decision.</text>
+<rect x="60" y="460" width="190" height="92" rx="4" fill="#f8f9f8" stroke="#c9cdc9"/>
+<text x="76" y="490" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="14" fill="#7a2e3a" text-anchor="start">load_document</text>
+<text x="76" y="512" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#454b54" text-anchor="start">Parse PDF / DOCX /</text>
+<text x="76" y="530" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#454b54" text-anchor="start">TXT</text>
+<path d="M254 506.0 L263 506.0 M255 499.0 L263 506.0 L255 513.0" fill="none" stroke="#454b54" stroke-width="2" opacity="0.6"/>
+<rect x="275" y="460" width="190" height="92" rx="4" fill="#f8f9f8" stroke="#c9cdc9"/>
+<text x="291" y="490" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="14" fill="#7a2e3a" text-anchor="start">extractor_agent</text>
+<text x="291" y="512" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#454b54" text-anchor="start">Pull structured terms</text>
+<path d="M469 506.0 L478 506.0 M470 499.0 L478 506.0 L470 513.0" fill="none" stroke="#454b54" stroke-width="2" opacity="0.6"/>
+<rect x="490" y="460" width="190" height="92" rx="4" fill="#f8f9f8" stroke="#c9cdc9"/>
+<text x="506" y="490" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="14" fill="#7a2e3a" text-anchor="start">compliance_agent</text>
+<text x="506" y="512" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#454b54" text-anchor="start">Check terms vs. rules</text>
+<path d="M684 506.0 L693 506.0 M685 499.0 L693 506.0 L685 513.0" fill="none" stroke="#454b54" stroke-width="2" opacity="0.6"/>
+<rect x="705" y="460" width="190" height="92" rx="4" fill="#f8f9f8" stroke="#c9cdc9"/>
+<text x="721" y="490" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="14" fill="#7a2e3a" text-anchor="start">risk_agent</text>
+<text x="721" y="512" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#454b54" text-anchor="start">Rate + narrate risk</text>
+<path d="M899 506.0 L908 506.0 M900 499.0 L908 506.0 L900 513.0" fill="none" stroke="#454b54" stroke-width="2" opacity="0.6"/>
+<rect x="920" y="460" width="190" height="92" rx="4" fill="#f8f9f8" stroke="#c9cdc9"/>
+<text x="936" y="490" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="14" fill="#7a2e3a" text-anchor="start">orchestrator_compile</text>
+<text x="936" y="512" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#454b54" text-anchor="start">Merge into draft</text>
+<text x="936" y="530" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#454b54" text-anchor="start">report</text>
+<path d="M1114 506.0 L1123 506.0 M1115 499.0 L1123 506.0 L1115 513.0" fill="none" stroke="#454b54" stroke-width="2" opacity="0.6"/>
+<rect x="1135" y="460" width="190" height="92" rx="4" fill="#f1e2e2" stroke="#7a2e3a" stroke-dasharray="5,4"/>
+<text x="1151" y="490" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="14" fill="#7a2e3a" text-anchor="start">⏸ human review</text>
+<text x="1151" y="512" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#454b54" text-anchor="start">Approve / edit /</text>
+<text x="1151" y="530" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#454b54" text-anchor="start">reject</text>
+<path d="M1329 506.0 L1338 506.0 M1330 499.0 L1338 506.0 L1330 513.0" fill="none" stroke="#454b54" stroke-width="2" opacity="0.6"/>
+<rect x="1350" y="460" width="190" height="92" rx="4" fill="#f8f9f8" stroke="#c9cdc9"/>
+<text x="1366" y="490" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="14" fill="#7a2e3a" text-anchor="start">finalize</text>
+<text x="1366" y="512" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#454b54" text-anchor="start">Write final report</text>
+<text x="60" y="616" font-family="Georgia, 'Times New Roman', serif" font-size="26" font-weight="700" fill="#171a1f" text-anchor="start">File-by-File Index</text>
+<text x="60" y="646" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#454b54" text-anchor="start">Grouped the same way as docs/CODE_MAP.md.</text>
+<rect x="60" y="670" width="728.0" height="328" rx="4" fill="#f8f9f8" stroke="#c9cdc9"/>
+<text x="78" y="694" font-family="Georgia, 'Times New Roman', serif" font-size="16" font-weight="700" fill="#171a1f" text-anchor="start">Exhibit A — Entry &amp; Orchestration (app/)</text>
+<text x="78" y="718" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">streamlit_app.py</text>
+<text x="92" y="738" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">Upload UI, runs the graph, shows the report, collects the human decision, renders the observability</text>
+<text x="92" y="755" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">panel.</text>
+<text x="78" y="784" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">graph.py</text>
+<text x="92" y="804" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">Wires the LangGraph StateGraph: 6 nodes, SqliteSaver checkpointing, interrupts before finalize.</text>
+<text x="78" y="833" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">state.py</text>
+<text x="92" y="853" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">DealReviewState + the 3 agents' structured-output schemas, threaded through every node.</text>
+<text x="78" y="882" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">config.py</text>
+<text x="92" y="902" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">Loads .env, builds the shared Claude client. max_tokens=4096 after a real truncation bug.</text>
+<text x="78" y="931" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">observability.py</text>
+<text x="92" y="951" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">trace()/audit()/node_span()/stage_summary() — powers the UI's live per-run panel.</text>
+<rect x="812.0" y="670" width="728.0" height="360" rx="4" fill="#f8f9f8" stroke="#c9cdc9"/>
+<text x="830.0" y="694" font-family="Georgia, 'Times New Roman', serif" font-size="16" font-weight="700" fill="#171a1f" text-anchor="start">Exhibit B — Agents (app/agents/)</text>
+<text x="830.0" y="718" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">prompts.py</text>
+<text x="844.0" y="738" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">One system prompt per agent — identity + guardrails, incl. prompt-injection resistance.</text>
+<text x="830.0" y="767" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">_llm_utils.py</text>
+<text x="844.0" y="787" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">structured_call_with_retry() — sends system + task prompt, retries once on parse failure.</text>
+<text x="830.0" y="816" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">extractor.py</text>
+<text x="844.0" y="836" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">Agent 1 (LLM). Pulls parties, amount, rate, term, clauses, dates from raw text.</text>
+<text x="830.0" y="865" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">compliance.py</text>
+<text x="844.0" y="885" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">Agent 2 (LLM). Checks terms vs. rules.yaml: pass/fail/unclear + evidence. Never guesses a pass.</text>
+<text x="830.0" y="914" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">risk.py</text>
+<text x="844.0" y="934" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">Agent 3 (LLM). Severity-rated risk findings, including risks no rule covers.</text>
+<text x="830.0" y="963" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">orchestrator.py</text>
+<text x="844.0" y="983" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">No LLM call. Deterministically merges all three agents' output into the draft report.</text>
+<rect x="60" y="1018" width="728.0" height="311" rx="4" fill="#f8f9f8" stroke="#c9cdc9"/>
+<text x="78" y="1042" font-family="Georgia, 'Times New Roman', serif" font-size="16" font-weight="700" fill="#171a1f" text-anchor="start">Exhibit C — Tools, Data &amp; Evaluation</text>
+<text x="78" y="1066" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">tools/document_loader.py</text>
+<text x="92" y="1086" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">Parses PDF/DOCX/TXT/MD. Raises DocumentLoadError — never guesses at content.</text>
+<text x="78" y="1115" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">data/compliance/rules.yaml</text>
+<text x="92" y="1135" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">6 synthetic compliance rules: rate cap, date, termination clause, parties, arbitration, amount.</text>
+<text x="78" y="1164" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">data/sample_deals/</text>
+<text x="92" y="1184" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">20 test documents across 4 tiers (normal/failing/edge_cases/extreme) + ANSWER_KEY.md.</text>
+<text x="78" y="1213" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">ragas_eval.py</text>
+<text x="92" y="1233" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">ragas Faithfulness check — scores the draft report's groundedness in the source document.</text>
+<text x="78" y="1262" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">scripts/run_ragas_faithfulness.py</text>
+<text x="92" y="1282" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">Runs the pipeline + faithfulness check over a cost-conscious sample of deals.</text>
+<rect x="812.0" y="1050" width="728.0" height="360" rx="4" fill="#f8f9f8" stroke="#c9cdc9"/>
+<text x="830.0" y="1074" font-family="Georgia, 'Times New Roman', serif" font-size="16" font-weight="700" fill="#171a1f" text-anchor="start">Exhibit D — Tests &amp; Documentation</text>
+<text x="830.0" y="1098" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">tests/test_document_loader.py</text>
+<text x="844.0" y="1118" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">Covers load_document()'s error paths — no API key required.</text>
+<text x="830.0" y="1147" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">tests/test_orchestrator.py</text>
+<text x="844.0" y="1167" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">Covers the orchestrator's merge logic and partial-failure handling.</text>
+<text x="830.0" y="1196" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">FRAMEWORK.md</text>
+<text x="844.0" y="1216" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">The one-liner + full agent framework, written before any code.</text>
+<text x="830.0" y="1245" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">docs/ARCHITECTURE.md</text>
+<text x="844.0" y="1265" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">System diagrams, human-in-the-loop sequence, state schema, failure handling.</text>
+<text x="830.0" y="1294" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">docs/PROJECT_WRITEUP.md</text>
+<text x="844.0" y="1314" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">The submission write-up — overview, datasets, prompts, iterations, learnings.</text>
+<text x="830.0" y="1343" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">CHANGELOG.md</text>
+<text x="844.0" y="1363" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12.5" fill="#454b54" text-anchor="start">Full commit-by-commit project history.</text>
+<line x1="60" y1="1450" x2="1540" y2="1450" stroke="#c9cdc9"/>
+<text x="60" y="1484" font-family="Georgia, 'Times New Roman', serif" font-size="19" font-weight="700" fill="#171a1f" text-anchor="start">State schema — what flows through every node</text>
+<text x="60" y="1510" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">deal_id</text>
+<text x="430" y="1510" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#454b54" text-anchor="start">UUID run identity — the checkpoint thread &amp; trace/audit filename key.</text>
+<text x="60" y="1534" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">raw_text / extracted_terms</text>
+<text x="430" y="1534" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#454b54" text-anchor="start">Parsed document text, then the extractor's structured output.</text>
+<text x="60" y="1558" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">compliance_findings / risk_findings</text>
+<text x="430" y="1558" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#454b54" text-anchor="start">Pass/fail/unclear list, then severity-rated risk findings.</text>
+<text x="60" y="1582" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">draft_report / final_report</text>
+<text x="430" y="1582" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#454b54" text-anchor="start">Orchestrator's merged report; final_report only set once approved.</text>
+<text x="60" y="1606" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12.5" fill="#7a2e3a" text-anchor="start">errors / needs_manual_review</text>
+<text x="430" y="1606" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#454b54" text-anchor="start">Accumulated failures — a run degrades gracefully, never crashes silently.</text>
+<line x1="60" y1="1650" x2="1540" y2="1650" stroke="#c9cdc9"/>
+<text x="60" y="1676" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12" fill="#454b54" text-anchor="start">Multi-Agent Deal Review Pipeline · Week 3 Project</text>
+<text x="1540" y="1676" font-family="Menlo, Consolas, 'Courier New', monospace" font-size="12" fill="#454b54" text-anchor="end">github.com/neehall/week3-deal-review-agent</text></svg>

@@ -7,7 +7,10 @@ See [FRAMEWORK.md](FRAMEWORK.md) for the one-liner and full agent framework this
 sequence, state schema) and the failure-handling / observability design in detail, and
 [docs/PROJECT_WRITEUP.md](docs/PROJECT_WRITEUP.md) for the submission write-up (prompts used,
 build iterations, learnings), [CHANGELOG.md](CHANGELOG.md) for the full change history, and
-[docs/CODE_MAP.md](docs/CODE_MAP.md) for a file-by-file index of what each source file does.
+[docs/CODE_MAP.md](docs/CODE_MAP.md) for a file-by-file index of what each source file does,
+or the visual version below.
+
+![Deal Review Dossier](docs/dossier.svg)
 
 ## What it does
 

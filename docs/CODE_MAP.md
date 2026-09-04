@@ -86,3 +86,4 @@ one-liner and design framework, see [FRAMEWORK.md](../FRAMEWORK.md).
 | [`requirements.txt`](../requirements.txt) | Python dependencies (LangGraph, LangChain, Anthropic SDK, Streamlit, document parsers, `pytest`, etc.). |
 | [`run.sh`](../run.sh) | Local launch script: creates/activates the venv, installs requirements, checks `.env` exists, then runs Streamlit with `PYTHONPATH` set. |
 | [`.env.example`](../.env.example) | Template for required env vars (`ANTHROPIC_API_KEY`, optional LangSmith tracing vars). |
+| [`docs/dossier.svg`](dossier.svg) | The visual companion to this file — a poster-style infographic covering the same file-by-file index, embedded in the README. |
